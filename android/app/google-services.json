@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1041710602592",
+    "project_id": "loocal-mark-it-down",
+    "storage_bucket": "loocal-mark-it-down.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041710602592:android:31737c210cdd85e1486605",
+        "android_client_info": {
+          "package_name": "com.example.local_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041710602592-qoph4vuajhtjj550raqmoqtdlu9u34ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsTLebtFmb7zhQ_odpP9ZOBGpb1jqofnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041710602592-qoph4vuajhtjj550raqmoqtdlu9u34ud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041710602592:android:7d1ccfcef22ee1f2486605",
+        "android_client_info": {
+          "package_name": "com.example.loocal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041710602592-qoph4vuajhtjj550raqmoqtdlu9u34ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsTLebtFmb7zhQ_odpP9ZOBGpb1jqofnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041710602592-qoph4vuajhtjj550raqmoqtdlu9u34ud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
