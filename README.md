@@ -30,10 +30,10 @@ Loocal is a Flutter-based mobile app that allows users to create, view, and inte
 ## Screenshots
 
 ### Public Map
-![Public Map](assets/pub1.jpg) ![Public Map2](assets/pub2.jpg)
+![Public Map](assets/pub.jpg)
 
 ### Private Map
-![Private Map](assets/pri1.jpg) ![Private Map](assets/pri2.jpg)
+![Private Map](assets/pri.jpg)
 
 ---
 
