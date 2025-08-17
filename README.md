@@ -1,77 +1,56 @@
-Loocal 🌍
+# Loocal - Flutter Map App
 
-Loocal is a Flutter-based mobile application that lets users mark, share, and interact with locations on a map in public and private modes. Build your own personal map, explore community-shared spots, and engage with other users’ markers!
+![App Logo](assets/loocal.png)
 
-🌟 Features
-Public Map
+Loocal is a Flutter-based mobile app that allows users to create, view, and interact with **public and private map markers**. Users can mark locations, add notes, like/dislike markers, and manage their own private markers securely.
 
-Add markers with custom titles.
+---
 
-Like or dislike markers from other users.
+## Features
 
-Only the creator can delete their markers.
+### Public Map
+- Users can add markers visible to everyone.
+- Markers have a **title** and can be liked or disliked by other users.
+- Only the creator can delete their markers.
+- Real-time updates using **Firebase Firestore**.
 
-Collaborative map experience with all users.
+### Private Map
+- Users can create markers visible only to themselves.
+- Each marker can have multiple notes.
+- Markers and notes are stored securely per user in Firestore.
+- Search functionality for marker titles and notes.
 
-Private Map
+### General Features
+- Current location tracking using **Geolocator**.
+- Smooth map experience using **Google Maps Flutter plugin**.
+- Simple and intuitive UI.
 
-Create personal markers visible only to you.
+---
 
-Add custom notes for each marker.
+## Screenshots
 
-Edit or delete markers anytime.
+### Public Map
+![Public Map](assets/public_map.png)
 
-General
+### Private Map
+![Private Map](assets/private_map.png)
 
-Search markers by title or notes.
+---
 
-Real-time saving using Firebase Firestore.
+## Tech Stack
 
-Track your current location with GPS integration.
+- **Flutter** – Frontend framework for cross-platform mobile apps  
+- **Firebase Auth** – User authentication  
+- **Cloud Firestore** – Database for storing markers and notes  
+- **Google Maps Flutter** – Interactive map  
+- **Geolocator** – Location services  
 
-Anonymous user authentication via Firebase Auth.
+---
 
-🛠 Technology Stack
+## Installation
 
-Flutter – Cross-platform mobile app framework.
-
-Google Maps Flutter Plugin – Map visualization.
-
-Firebase Firestore – Real-time database.
-
-Firebase Authentication – User login & security.
-
-Geolocator – Device GPS and location tracking.
-
-🚀 Getting Started
-
-Clone the repository
-
-git clone <your-repo-url>
-
-
-Install dependencies
-
-flutter pub get
-
-
-Run the app
-
-flutter run
-
-
-APK build (optional)
-
-flutter build apk
-
-📌 Screenshots
-
-(Optional: Add screenshots of your app’s public and private map screens here to make it visually appealing)
-
-🤝 Contribution
-
-Contributions are welcome! Feel free to fork, raise issues, or submit pull requests.
-
-📄 License
-
-This project is open-source and available under the MIT License.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/loocal-app.git
+   cd loocal-app
+   flutter run
