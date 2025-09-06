@@ -1,16 +1,73 @@
-# loocal
+# Loocal - Flutter Map App
 
-A new Flutter project.
+![App Logo](assets/loocal.png)
 
-## Getting Started
+Loocal is a Flutter-based mobile app that allows users to create, view, and interact with **public and private map markers**. Users can mark locations, add notes, like/dislike markers, and manage their own private markers securely.  
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## Home Screens
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![Home1](assets/home1.jpg)  
+![Home2](assets/home2.jpg)  
+![Home3](assets/home3.jpg)  
+![Home4](assets/home4.jpg)  
+![Home5](assets/home5.jpg)  
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## Features
+
+### Public Map
+- Users can add markers visible to everyone.  
+- Markers have a **title** and can be liked or disliked by other users.  
+- Only the creator can delete their markers.  
+- Real-time updates using **Firebase Firestore**.  
+
+### Private Map
+- Users can create markers visible only to themselves.  
+- Each marker can have multiple notes.  
+- Markers and notes are stored securely per user in Firestore.  
+- Search functionality for marker titles and notes.  
+
+### General Features
+- Current location tracking using **Geolocator**.  
+- Smooth map experience using **Google Maps Flutter plugin**.  
+- Simple and intuitive UI.  
+
+---
+
+## Map Screens
+
+![Map1](assets/map1.jpg)  
+![Map2](assets/map2.jpg)  
+![Map3](assets/map3.jpg)  
+![Map4](assets/map4.jpg)  
+![Map5](assets/map5.jpg)  
+
+---
+
+## Download APK  
+
+👉 [**Download the latest APK here**](https://github.com/Habiba-Ansari/Loocal/releases/latest)  
+
+---
+
+## Tech Stack
+
+- **Flutter** – Frontend framework for cross-platform mobile apps  
+- **Firebase Auth** – User authentication  
+- **Cloud Firestore** – Database for storing markers and notes  
+- **Google Maps Flutter** – Interactive map  
+- **Geolocator** – Location services  
+
+---
+
+## Installation
+
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/Habiba-Ansari/Loocal.git
+   cd loocal
+   flutter pub get
+   flutter run
