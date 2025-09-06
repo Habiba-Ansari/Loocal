@@ -8,9 +8,11 @@ Loocal is a Flutter-based mobile app that allows users to create, view, and inte
 
 ## Home Screens
 
-![Home1](assets/home.jpg)  
-![Home2](assets/home5.jpg)  
-
+![Home1](assets/home1.jpg)  
+![Home2](assets/home2.jpg)  
+![Home3](assets/home3.jpg)  
+![Home4](assets/home4.jpg)  
+![Home5](assets/home5.jpg)  
 
 ---
 
@@ -37,9 +39,11 @@ Loocal is a Flutter-based mobile app that allows users to create, view, and inte
 
 ## Map Screens
 
-![Map1](assets/pri.jpg)  
-![Map2](assets/pub.jpg)  
-
+![Map1](assets/map1.jpg)  
+![Map2](assets/map2.jpg)  
+![Map3](assets/map3.jpg)  
+![Map4](assets/map4.jpg)  
+![Map5](assets/map5.jpg)  
 
 ---
 
