@@ -121,9 +121,9 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Image Slider Section - optimized for square images
+            // Image Slider Section - REDUCED HEIGHT
             SizedBox(
-              height: 350, // Increased height to accommodate square images
+              height: 250, // REDUCED from 350 to 250
               child: Column(
                 children: [
                   Expanded(
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(20),
                               child: Image.asset(
                                 'assets/${_sliderItems[index]['image']}',
-                                fit: BoxFit.fitHeight, // Changed to fitHeight for square images
+                                fit: BoxFit.cover, // Changed to cover for better appearance
                                 width: double.infinity,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
@@ -175,15 +175,15 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       _sliderItems.length,
                       (index) => Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 6,
+                        height: 6,
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: _currentPage == index
@@ -197,71 +197,95 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             
-            // Welcome Section
+            // Welcome Section - COMPACT VERSION
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(20),
                 child: Container(
-                  padding: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(20), // REDUCED padding
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.95),
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 6),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       const Text(
                         "Welcome to Loocal",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: 22, // SLIGHTLY SMALLER
                           fontWeight: FontWeight.bold,
                           color: Colors.blueAccent,
                         ),
                       ),
+                      const SizedBox(height: 20), // REDUCED SPACING
+                      
+                      // BUTTONS IN SINGLE ROW
+                      Row(
+                        children: [
+                          // Public Map Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const MapScreen()),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                "Public Map",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Private Map Button
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const PrivateMapScreen()),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                side: const BorderSide(color: Colors.blueAccent),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                "Private Map",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 10),
-                      const Text(
-                        "Mark, vote, and remember your favorite places — publicly and privately.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 15),
-                      ),
-                      const SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const MapScreen()),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                        ),
-                        child: const Text("Public Map"),
-                      ),
-                      const SizedBox(height: 16),
-                      OutlinedButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const PrivateMapScreen()),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                          side: const BorderSide(color: Colors.blueAccent),
-                        ),
-                        child: const Text("Private Map"),
-                      ),
                     ],
                   ),
                 ),
               ),
+            ),
+            
+            // SPACE FOR ADS WILL BE ADDED BY HomeWithAds
+            // This container reserves space for the ad
+            Container(
+              height: 60, // Space reserved for banner ad
+              color: Colors.transparent,
             ),
           ],
         ),

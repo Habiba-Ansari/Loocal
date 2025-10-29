@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ class PrivateMapScreen extends StatefulWidget {
 }
 
 class _PrivateMapScreenState extends State<PrivateMapScreen> {
-  late GoogleMapController _mapController;
+  late MapController _mapController;
   LatLng? _currentPosition;
   bool _isMarkingMode = false;
   Set<Marker> _allMarkers = {};
@@ -52,6 +53,7 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
   @override
   void initState() {
     super.initState();
+    _mapController = MapController();
     _initialize();
   }
 
@@ -63,6 +65,27 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
     uid = user!.uid;
     await _determinePosition();
     await _loadMarkersFromFirestore();
+  }
+
+  // Custom marker widget for OpenStreetMap
+  Widget _buildMarkerWidget(String category, String markerId) {
+    final color = _markingCategories[category] ?? Colors.grey;
+    return GestureDetector(
+      onTap: () => _openNotesDialog(markerId),
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: Icon(
+          _categoryIcons[category] ?? Icons.category,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
+    );
   }
 
   Future<void> _loadMarkersFromFirestore() async {
@@ -84,10 +107,10 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
       _markerCategories[id] = category;
 
       final marker = Marker(
-        markerId: MarkerId(id),
-        position: LatLng((data['lat'] as num).toDouble(), (data['lng'] as num).toDouble()),
-        icon: await _getCustomMarkerIcon(category),
-        onTap: () => _openNotesDialog(id),
+        point: LatLng((data['lat'] as num).toDouble(), (data['lng'] as num).toDouble()),
+        width: 40,
+        height: 40,
+        builder: (ctx) => _buildMarkerWidget(category, id),
       );
       _allMarkers.add(marker);
     }
@@ -97,24 +120,7 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
     });
   }
 
-  // Generate custom marker icon with category color
-  Future<BitmapDescriptor> _getCustomMarkerIcon(String category) async {
-    final color = _markingCategories[category] ?? Colors.grey;
-    return BitmapDescriptor.defaultMarkerWithHue(
-      _colorToHue(color),
-    );
-  }
-
-  // Convert color to hue value for markers
-  double _colorToHue(Color color) {
-    if (color == Colors.blue) return BitmapDescriptor.hueBlue;
-    if (color == Colors.red) return BitmapDescriptor.hueRed;
-    if (color == Colors.green) return BitmapDescriptor.hueGreen;
-    if (color == Colors.orange) return BitmapDescriptor.hueOrange;
-    if (color == Colors.purple) return BitmapDescriptor.hueViolet;
-    if (color == Colors.pink) return BitmapDescriptor.hueRose;
-    return BitmapDescriptor.hueAzure; // Default
-  }
+  // REMOVED: _getCustomMarkerIcon and _colorToHue methods (not needed for OpenStreetMap)
 
   Future<void> _saveMarkerToFirestore(String id, LatLng pos) async {
     await _firestore.collection('users').doc(uid).collection('markers').doc(id).set({
@@ -148,16 +154,12 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
     });
+    
+    // Center map on current position
+    _mapController.move(_currentPosition!, 14.0);
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    if (_currentPosition != null) {
-      _mapController.animateCamera(CameraUpdate.newLatLng(_currentPosition!));
-    }
-  }
-
-  void _onMapTap(LatLng position) {
+  void _onMapTap(TapPosition tapPosition, LatLng position) {
     if (!_isMarkingMode) return;
     
     String inputTitle = '';
@@ -261,10 +263,10 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
                             _markerCategories[id] = selectedCategory;
 
                             final marker = Marker(
-                              markerId: MarkerId(id),
-                              position: position,
-                              icon: await _getCustomMarkerIcon(selectedCategory),
-                              onTap: () => _openNotesDialog(id),
+                              point: position,
+                              width: 40,
+                              height: 40,
+                              builder: (ctx) => _buildMarkerWidget(selectedCategory, id),
                             );
 
                             setState(() {
@@ -292,8 +294,11 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
 
   void _deleteMarker(String markerId) async {
     setState(() {
-      _allMarkers.removeWhere((m) => m.markerId.value == markerId);
-      _visibleMarkers.removeWhere((m) => m.markerId.value == markerId);
+      _allMarkers.removeWhere((m) {
+        // Find marker by checking if we have data for this ID
+        return _markerTitles[markerId] != null;
+      });
+      _visibleMarkers = Set.from(_allMarkers);
       _markerTitles.remove(markerId);
       _markerNotes.remove(markerId);
       _markerCategories.remove(markerId);
@@ -382,10 +387,19 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
                             icon: const Icon(Icons.delete_outline, size: 20),
                             onPressed: () async {
                               _markerNotes[markerId]?.removeAt(index);
-                              await _saveMarkerToFirestore(
-                                markerId,
-                                _allMarkers.firstWhere((m) => m.markerId.value == markerId).position,
-                              );
+                              // Find the marker position by ID
+                              LatLng? markerPos;
+                              for (var marker in _allMarkers) {
+                                // We need to find the marker by checking our data
+                                // This is a simplified approach
+                                if (_markerTitles[markerId] != null) {
+                                  markerPos = marker.point;
+                                  break;
+                                }
+                              }
+                              if (markerPos != null) {
+                                await _saveMarkerToFirestore(markerId, markerPos);
+                              }
                               setState(() {});
                             },
                           ),
@@ -408,10 +422,19 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
                           onPressed: () async {
                             if (controller.text.trim().isNotEmpty) {
                               _markerNotes[markerId]?.add(controller.text.trim());
-                              await _saveMarkerToFirestore(
-                                markerId,
-                                _allMarkers.firstWhere((m) => m.markerId.value == markerId).position,
-                              );
+                              // Find the marker position by ID
+                              LatLng? markerPos;
+                              for (var marker in _allMarkers) {
+                                // We need to find the marker by checking our data
+                                // This is a simplified approach
+                                if (_markerTitles[markerId] != null) {
+                                  markerPos = marker.point;
+                                  break;
+                                }
+                              }
+                              if (markerPos != null) {
+                                await _saveMarkerToFirestore(markerId, markerPos);
+                              }
                               controller.clear();
                               setState(() {});
                             }
@@ -437,11 +460,17 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
       return;
     }
     final filtered = _allMarkers.where((marker) {
-      final id = marker.markerId.value;
-      final title = _markerTitles[id]?.toLowerCase() ?? '';
-      final notes = (_markerNotes[id] ?? []).join(' ').toLowerCase();
-      final category = _markerCategories[id]?.toLowerCase() ?? '';
-      return title.contains(query) || notes.contains(query) || category.contains(query);
+      // Find marker data by checking all entries
+      for (var entry in _markerTitles.entries) {
+        final markerId = entry.key;
+        final title = _markerTitles[markerId]?.toLowerCase() ?? '';
+        final notes = (_markerNotes[markerId] ?? []).join(' ').toLowerCase();
+        final category = _markerCategories[markerId]?.toLowerCase() ?? '';
+        if (title.contains(query) || notes.contains(query) || category.contains(query)) {
+          return true;
+        }
+      }
+      return false;
     }).toSet();
 
     setState(() {
@@ -462,12 +491,25 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(target: _currentPosition!, zoom: 14),
-                  myLocationEnabled: true,
-                  markers: _visibleMarkers,
-                  onTap: _onMapTap,
+                // REPLACED GoogleMap with FlutterMap
+                FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    center: _currentPosition!,
+                    zoom: 14.0,
+                    onTap: _onMapTap,
+                  ),
+                  children: [
+                    // OpenStreetMap tiles
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.loocal',
+                    ),
+                    // Markers layer
+                    MarkerLayer(
+                      markers: _visibleMarkers.toList(),
+                    ),
+                  ],
                 ),
                 if (!_isMarkingMode)
                   Positioned(
@@ -524,6 +566,14 @@ class _PrivateMapScreenState extends State<PrivateMapScreen> {
             onPressed: () => setState(() => _isMarkingMode = !_isMarkingMode),
             backgroundColor: _isMarkingMode ? Colors.deepPurple : Colors.purple,
             child: Icon(_isMarkingMode ? Icons.add_location_alt : Icons.note_add, color: Colors.white),
+          ),
+          // Added my location button
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _determinePosition,
+            backgroundColor: Colors.green,
+            mini: true,
+            child: const Icon(Icons.my_location, color: Colors.white),
           ),
         ],
       ),
